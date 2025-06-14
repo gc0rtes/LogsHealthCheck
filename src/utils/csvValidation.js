@@ -35,3 +35,47 @@ export const validateCSVFields = (file) => {
     });
   });
 };
+
+export const analyzeCSVData = (file) => {
+  return new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      complete: (results) => {
+        const data = results.data;
+
+        // Get time window (first and last timestamp)
+        const timestamps = data
+          .map((row) => new Date(row["@timestamp"]))
+          .filter((date) => !isNaN(date.getTime()))
+          .sort((a, b) => a - b);
+
+        const timeWindow =
+          timestamps.length > 0
+            ? {
+                start: timestamps[0],
+                end: timestamps[timestamps.length - 1],
+              }
+            : null;
+
+        // Count 4xx errors
+        const totalErrors = data.filter((row) => {
+          const response = parseInt(row.response);
+          return response >= 400 && response < 500;
+        }).length;
+
+        // Count unique error codes
+        const uniqueErrorCodes = new Set(data.map((row) => row.error_code))
+          .size;
+
+        resolve({
+          timeWindow,
+          totalErrors,
+          uniqueErrorCodes,
+        });
+      },
+      error: (error) => {
+        reject(new Error("Error analyzing CSV data: " + error.message));
+      },
+    });
+  });
+};

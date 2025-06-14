@@ -1,28 +1,33 @@
 import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { validateCSVFields } from './utils/csvValidation'
+import { validateCSVFields, analyzeCSVData } from './utils/csvValidation'
 import './App.css'
 
 function App() {
   const [validationResult, setValidationResult] = useState(null);
+  const [analysisData, setAnalysisData] = useState(null);
   const [error, setError] = useState(null);
 
   const onDrop = async (acceptedFiles) => {
     setError(null);
     setValidationResult(null);
+    setAnalysisData(null);
     const file = acceptedFiles[0];
 
     if (file) {
       try {
         await validateCSVFields(file);
+        const analysis = await analyzeCSVData(file);
         setValidationResult({
           fileName: file.name,
           status: 'success',
           message: 'CSV file contains all required fields'
         });
+        setAnalysisData(analysis);
       } catch (err) {
         setError(err.message);
         setValidationResult(null);
+        setAnalysisData(null);
       }
     }
   };
@@ -37,7 +42,21 @@ function App() {
 
   const handleNewUpload = () => {
     setValidationResult(null);
+    setAnalysisData(null);
     setError(null);
+  };
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString('en-US', {
+      timeZone: 'GMT',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
   };
 
   return (
@@ -97,6 +116,35 @@ function App() {
                   Upload New File
                 </button>
               </div>
+
+              {/* Dashboard Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {/* Time Window Card */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Time Window Analysis (GMT)</h3>
+                  {analysisData?.timeWindow ? (
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">Start: {formatDate(analysisData.timeWindow.start)}</p>
+                      <p className="text-sm text-gray-600">End: {formatDate(analysisData.timeWindow.end)}</p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No time data available</p>
+                  )}
+                </div>
+
+                {/* Total Errors Card */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Total 4xx Errors</h3>
+                  <p className="text-3xl font-bold text-red-600">{analysisData?.totalErrors || 0}</p>
+                </div>
+
+                {/* Unique Error Codes Card */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Unique Error Codes</h3>
+                  <p className="text-3xl font-bold text-blue-600">{analysisData?.uniqueErrorCodes || 0}</p>
+                </div>
+              </div>
+
               <div className="bg-green-50 border border-green-200 rounded-md p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
