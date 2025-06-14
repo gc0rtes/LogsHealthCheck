@@ -1,12 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { validateCSVFields, analyzeCSVData } from './utils/csvValidation'
+import DashboardCard from './components/DashboardCard'
+import ErrorDistributionChart from './components/ErrorDistributionChart'
 import './App.css'
 
 function App() {
   const [validationResult, setValidationResult] = useState(null);
   const [analysisData, setAnalysisData] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let timeoutId;
+    if (validationResult?.status === 'success') {
+      timeoutId = setTimeout(() => {
+        setValidationResult(null);
+      }, 3000);
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [validationResult]);
 
   const onDrop = async (acceptedFiles) => {
     setError(null);
@@ -59,6 +75,109 @@ function App() {
     });
   };
 
+  const renderUploadArea = () => (
+    <div className="px-4 py-6 sm:px-0">
+      <div
+        {...getRootProps()}
+        className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+      >
+        <div className="space-y-1 text-center">
+          <input {...getInputProps()} />
+          <div className="flex text-sm text-gray-600">
+            <label
+              htmlFor="file-upload"
+              className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+            >
+              <span>Upload a CSV file</span>
+            </label>
+            <p className="pl-1">or drag and drop</p>
+          </div>
+          <p className="text-xs text-gray-500">CSV files only</p>
+        </div>
+      </div>
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Error</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{error}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderDashboard = () => (
+    <div className="mb-8">
+      <div className="flex justify-center mb-8">
+        <button
+          onClick={handleNewUpload}
+          className="!bg-[#2c2121] hover:!bg-[#3a2b2b] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105"
+        >
+          Upload New File
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <DashboardCard title="Time Window Analysis (GMT)">
+          {analysisData?.timeWindow ? (
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600">Start: {formatDate(analysisData.timeWindow.start)}</p>
+              <p className="text-sm text-gray-600">End: {formatDate(analysisData.timeWindow.end)}</p>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">No time data available</p>
+          )}
+        </DashboardCard>
+
+        <DashboardCard title="Total 4xx Errors" valueColor="text-3xl font-bold text-red-600">
+          {analysisData?.totalErrors || 0}
+        </DashboardCard>
+
+        <DashboardCard title="Unique Error Codes" valueColor="text-3xl font-bold text-blue-600">
+          {analysisData?.uniqueErrorCodes || 0}
+        </DashboardCard>
+      </div>
+
+      {/* Error Distribution Chart */}
+      <div className="mb-8">
+        <DashboardCard title="4xx Error Distribution">
+          {analysisData?.errorDistribution && analysisData.errorDistribution.length > 0 ? (
+            <ErrorDistributionChart data={analysisData.errorDistribution} />
+          ) : (
+            <p className="text-sm text-gray-500">No error distribution data available</p>
+          )}
+        </DashboardCard>
+      </div>
+
+      {validationResult && (
+        <div className="bg-green-50 border border-green-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-green-800">Success</h3>
+              <div className="mt-2 text-sm text-green-700">
+                <p>{validationResult.message}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto">
@@ -68,104 +187,11 @@ function App() {
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8">
-          {!validationResult ? (
-            <div className="px-4 py-6 sm:px-0">
-              <div
-                {...getRootProps()}
-                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
-              >
-                <div className="space-y-1 text-center">
-                  <input {...getInputProps()} />
-                  <div className="flex text-sm text-gray-600">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                    >
-                      <span>Upload a CSV file</span>
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs text-gray-500">CSV files only</p>
-                </div>
-              </div>
-              {error && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800">Error</h3>
-                      <div className="mt-2 text-sm text-red-700">
-                        <p>{error}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="mb-8">
-              <div className="flex justify-center mb-8">
-                <button
-                  onClick={handleNewUpload}
-                  className="!bg-[#2c2121] hover:!bg-[#3a2b2b] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105"
-                >
-                  Upload New File
-                </button>
-              </div>
-
-              {/* Dashboard Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {/* Time Window Card */}
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Time Window Analysis (GMT)</h3>
-                  {analysisData?.timeWindow ? (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600">Start: {formatDate(analysisData.timeWindow.start)}</p>
-                      <p className="text-sm text-gray-600">End: {formatDate(analysisData.timeWindow.end)}</p>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500">No time data available</p>
-                  )}
-                </div>
-
-                {/* Total Errors Card */}
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Total 4xx Errors</h3>
-                  <p className="text-3xl font-bold text-red-600">{analysisData?.totalErrors || 0}</p>
-                </div>
-
-                {/* Unique Error Codes Card */}
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Unique Error Codes</h3>
-                  <p className="text-3xl font-bold text-blue-600">{analysisData?.uniqueErrorCodes || 0}</p>
-                </div>
-              </div>
-
-              <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-green-800">Success</h3>
-                    <div className="mt-2 text-sm text-green-700">
-                      <p>{validationResult.message}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {!analysisData ? renderUploadArea() : renderDashboard()}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

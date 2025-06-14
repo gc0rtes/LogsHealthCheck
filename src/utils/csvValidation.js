@@ -9,7 +9,7 @@ const REQUIRED_FIELDS = [
   "product",
   "@timestamp",
 ];
-
+//check if the csv file has all the required fields
 export const validateCSVFields = (file) => {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -35,7 +35,7 @@ export const validateCSVFields = (file) => {
     });
   });
 };
-
+//analyze the csv data
 export const analyzeCSVData = (file) => {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
@@ -57,11 +57,27 @@ export const analyzeCSVData = (file) => {
               }
             : null;
 
-        // Count 4xx errors
-        const totalErrors = data.filter((row) => {
+        // Count 4xx errors and their distribution
+        const errorDistribution = {};
+        let total4xxErrors = 0;
+
+        data.forEach((row) => {
           const response = parseInt(row.response);
-          return response >= 400 && response < 500;
-        }).length;
+          if (response >= 400 && response < 500) {
+            total4xxErrors++;
+            errorDistribution[response] =
+              (errorDistribution[response] || 0) + 1;
+          }
+        });
+
+        // Convert distribution to percentages and format for chart
+        const errorDistributionData = Object.entries(errorDistribution).map(
+          ([code, count]) => ({
+            name: `${code} Error`,
+            value: count,
+            percentage: ((count / total4xxErrors) * 100).toFixed(1),
+          })
+        );
 
         // Count unique error codes
         const uniqueErrorCodes = new Set(data.map((row) => row.error_code))
@@ -69,8 +85,9 @@ export const analyzeCSVData = (file) => {
 
         resolve({
           timeWindow,
-          totalErrors,
+          totalErrors: total4xxErrors,
           uniqueErrorCodes,
+          errorDistribution: errorDistributionData,
         });
       },
       error: (error) => {
