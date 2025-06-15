@@ -61,6 +61,7 @@ export const analyzeCSVData = (file) => {
         // Count 4xx errors and their distribution
         const errorDistribution = {};
         const clientTypeDistribution = {};
+        const sdkErrorDistribution = {};
         let total4xxErrors = 0;
 
         data.forEach((row) => {
@@ -74,6 +75,16 @@ export const analyzeCSVData = (file) => {
             const clientType = classifyClientType(row["x-stream-client"]);
             clientTypeDistribution[clientType] =
               (clientTypeDistribution[clientType] || 0) + 1;
+
+            // Count SDK error distribution using classified client type
+            const sdkType = classifyClientType(row["x-stream-client"]);
+            const errorCode = row.error_code || "Unknown";
+
+            if (!sdkErrorDistribution[sdkType]) {
+              sdkErrorDistribution[sdkType] = {};
+            }
+            sdkErrorDistribution[sdkType][errorCode] =
+              (sdkErrorDistribution[sdkType][errorCode] || 0) + 1;
           }
         });
 
@@ -95,6 +106,14 @@ export const analyzeCSVData = (file) => {
           percentage: ((count / total4xxErrors) * 100).toFixed(1),
         }));
 
+        // Format SDK error distribution data for the chart
+        const sdkErrorDistributionData = Object.entries(
+          sdkErrorDistribution
+        ).map(([sdkType, errorCodes]) => ({
+          sdkType,
+          ...errorCodes,
+        }));
+
         // Count unique error codes
         const uniqueErrorCodes = new Set(data.map((row) => row.error_code))
           .size;
@@ -105,6 +124,7 @@ export const analyzeCSVData = (file) => {
           uniqueErrorCodes,
           errorDistribution: errorDistributionData,
           clientTypeDistribution: clientTypeDistributionData,
+          sdkErrorDistribution: sdkErrorDistributionData,
         });
       },
       error: (error) => {

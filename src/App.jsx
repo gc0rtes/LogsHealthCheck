@@ -4,6 +4,7 @@ import { validateCSVFields, analyzeCSVData } from './utils/csvValidation'
 import DashboardCard from './components/DashboardCard'
 import ErrorDistributionChart from './components/ErrorDistributionChart'
 import ClientTypeDistributionChart from './components/ClientTypeDistributionChart'
+import SDKErrorDistributionChart from './components/SDKErrorDistributionChart'
 
 
 function App() {
@@ -165,6 +166,17 @@ function App() {
             <ClientTypeDistributionChart data={analysisData.clientTypeDistribution} />
           ) : (
             <p className="text-sm text-gray-500">No client type distribution data available</p>
+          )}
+        </DashboardCard>
+      </div>
+
+      {/* SDK Error Distribution Chart */}
+      <div className="grid grid-cols-1 gap-6 mb-8">
+        <DashboardCard title="Error Distribution by SDK Type and Error Code">
+          {analysisData?.sdkErrorDistribution && analysisData.sdkErrorDistribution.length > 0 ? (
+            <SDKErrorDistributionChart data={analysisData.sdkErrorDistribution} />
+          ) : (
+            <p className="text-sm text-gray-500">No SDK error distribution data available</p>
           )}
         </DashboardCard>
       </div>
