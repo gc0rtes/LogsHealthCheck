@@ -148,7 +148,7 @@ function App() {
           {analysisData?.totalErrors || 0}
         </DashboardCard>
 
-        <DashboardCard title="Unique Error Codes" valueColor="text-3xl font-bold text-blue-600">
+        <DashboardCard title="Unique Stream Error Codes" valueColor="text-3xl font-bold text-blue-600">
           {analysisData?.uniqueErrorCodes || 0}
         </DashboardCard>
 
