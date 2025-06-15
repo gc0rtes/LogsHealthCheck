@@ -114,9 +114,15 @@ export const analyzeCSVData = (file) => {
           ...errorCodes,
         }));
 
-        // Count unique error codes
-        const uniqueErrorCodes = new Set(data.map((row) => row.error_code))
-          .size;
+        // Count unique error codes only from 4xx responses
+        const uniqueErrorCodes = new Set(
+          data
+            .filter(
+              (row) =>
+                parseInt(row.response) >= 400 && parseInt(row.response) < 500
+            )
+            .map((row) => row.error_code)
+        ).size;
 
         resolve({
           timeWindow,
