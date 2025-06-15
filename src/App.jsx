@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone'
 import { validateCSVFields, analyzeCSVData } from './utils/csvValidation'
 import DashboardCard from './components/DashboardCard'
 import ErrorDistributionChart from './components/ErrorDistributionChart'
+import ClientTypeDistributionChart from './components/ClientTypeDistributionChart'
 import './App.css'
 
 function App() {
@@ -147,13 +148,23 @@ function App() {
         </DashboardCard>
       </div>
 
-      {/* Error Distribution Chart */}
-      <div className="mb-8">
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Error Distribution Chart */}
         <DashboardCard title="4xx Error Distribution">
           {analysisData?.errorDistribution && analysisData.errorDistribution.length > 0 ? (
             <ErrorDistributionChart data={analysisData.errorDistribution} />
           ) : (
             <p className="text-sm text-gray-500">No error distribution data available</p>
+          )}
+        </DashboardCard>
+
+        {/* Client Type Distribution Chart */}
+        <DashboardCard title="Error Distribution by Client Type">
+          {analysisData?.clientTypeDistribution && analysisData.clientTypeDistribution.length > 0 ? (
+            <ClientTypeDistributionChart data={analysisData.clientTypeDistribution} />
+          ) : (
+            <p className="text-sm text-gray-500">No client type distribution data available</p>
           )}
         </DashboardCard>
       </div>

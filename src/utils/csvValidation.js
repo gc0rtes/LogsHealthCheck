@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import { classifyClientType } from "./clientClassification";
 
 const REQUIRED_FIELDS = [
   "response",
@@ -59,6 +60,7 @@ export const analyzeCSVData = (file) => {
 
         // Count 4xx errors and their distribution
         const errorDistribution = {};
+        const clientTypeDistribution = {};
         let total4xxErrors = 0;
 
         data.forEach((row) => {
@@ -67,6 +69,11 @@ export const analyzeCSVData = (file) => {
             total4xxErrors++;
             errorDistribution[response] =
               (errorDistribution[response] || 0) + 1;
+
+            // Count client type distribution
+            const clientType = classifyClientType(row["x-stream-client"]);
+            clientTypeDistribution[clientType] =
+              (clientTypeDistribution[clientType] || 0) + 1;
           }
         });
 
@@ -79,6 +86,15 @@ export const analyzeCSVData = (file) => {
           })
         );
 
+        // Convert client type distribution to percentages and format for chart
+        const clientTypeDistributionData = Object.entries(
+          clientTypeDistribution
+        ).map(([type, count]) => ({
+          name: type,
+          value: count,
+          percentage: ((count / total4xxErrors) * 100).toFixed(1),
+        }));
+
         // Count unique error codes
         const uniqueErrorCodes = new Set(data.map((row) => row.error_code))
           .size;
@@ -88,6 +104,7 @@ export const analyzeCSVData = (file) => {
           totalErrors: total4xxErrors,
           uniqueErrorCodes,
           errorDistribution: errorDistributionData,
+          clientTypeDistribution: clientTypeDistributionData,
         });
       },
       error: (error) => {

@@ -31,17 +31,21 @@ Time Window Information: Display the start and end timestamps (in GTM) of the an
 Summary Cards:
 
 Total Errors: A card displaying the total count of errors. An error is strictly defined as any entry where the response column has a value greater than or equal to 400 and less than or equal to 499.
+
 Total Unique Error Codes: A card displaying the total number of distinct error_code values found among the filtered 4xx error logs.
 Charts (using Recharts):
 
 Error Distribution by Response Code (Pie Chart):
 Visualize the percentage distribution of error response codes specifically within the 4xx series (i.e., response values between 400 and 499 inclusive).
 Each slice of the pie chart should represent a unique error response code in this range, clearly showing its percentage of the total 4xx errors.
+
 Error Distribution by Operation Type (Stacked Bar Chart):
 Show the total number of errors (4xx series), broken down by operation_type.
 Each bar should represent a distinct operation_type. Segments within each bar should represent the different 4xx error response codes associated with that specific operation_type.
+
 Error Distribution by Client Type (Pie Chart):
 Client Classification Logic: Implement the provided pure JavaScript function, classifyClientType(clientString), to categorize the x-stream-client string into predefined client types. This function should reside in a src/utils helper file.
+
 JavaScript
 
 // Pure function: just returns the type
@@ -63,6 +67,7 @@ export const classifyClientType = (clientString) => {
   return "Other";
 };
 After classification, the pie chart should display the percentage of errors (specifically 4xx series errors) for each detected client type.
+
 Latest Client Versions Card:
 Create a dedicated card that displays the most recent version detected for each classified client type.
 Version Extraction: You must implement robust logic to extract version numbers from the x-stream-client string. Assume versions will typically follow a MAJOR.MINOR.PATCH format (e.g., 1.2.3). Handle cases where versions might not be present or are in a slightly different common format.
