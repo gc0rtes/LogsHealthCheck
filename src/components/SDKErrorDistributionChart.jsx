@@ -9,6 +9,9 @@ import {
     Legend,
     ResponsiveContainer
 } from 'recharts';
+import { ERROR_CODES } from '../utils/StreamErrorCodes';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5'];
 
 const SDKErrorDistributionChart = ({ data }) => {
     // Get all unique error codes from the data
@@ -17,6 +20,23 @@ const SDKErrorDistributionChart = ({ data }) => {
             Object.keys(item).filter(key => key !== 'sdkType')
         )
     )].filter(Boolean);
+
+    // Custom tooltip formatter
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-white p-3 border border-gray-200 shadow-lg rounded">
+                    <p className="font-semibold">{label}</p>
+                    {payload.map((entry, index) => (
+                        <p key={index} style={{ color: entry.color }}>
+                            {ERROR_CODES[entry.name]?.name || entry.name}: {entry.value}
+                        </p>
+                    ))}
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <div style={{ width: '100%', height: 400 }}>
@@ -34,14 +54,16 @@ const SDKErrorDistributionChart = ({ data }) => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="sdkType" />
                     <YAxis />
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend
+                        formatter={(value) => ERROR_CODES[value]?.name || value}
+                    />
                     {errorCodes.map((errorCode, index) => (
                         <Bar
                             key={errorCode}
                             dataKey={errorCode}
                             stackId="a"
-                            fill={`hsl(${(index * 360) / errorCodes.length}, 70%, 50%)`}
+                            fill={COLORS[index % COLORS.length]}
                         />
                     ))}
                 </BarChart>

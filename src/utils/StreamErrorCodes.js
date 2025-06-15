@@ -1,0 +1,155 @@
+export const ERROR_CODES = {
+  4: {
+    name: "Input Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "When wrong data/parameter is sent to the API",
+  },
+  6: {
+    name: "Duplicate Username Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description:
+      "When a duplicate username is sent while enforce_unique_usernames is enabled",
+  },
+  20: {
+    name: "Message Too Long Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "Message is too long",
+  },
+  18: {
+    name: "Event Not Supported Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "Event is not supported",
+  },
+  19: {
+    name: "Channel Feature Not Supported Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description:
+      "The feature is currently disabled on the dashboard (i.e. Reactions & Replies)",
+  },
+  21: {
+    name: "Multiple Nesting Level Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description:
+      "Multiple Levels Reply is not supported - the API only supports 1 level deep reply threads",
+  },
+  45: {
+    name: "Custom Command Endpoint Call Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "Custom Command handler returned an error",
+  },
+  44: {
+    name: "Custom Command Endpoint Missing Error",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "App config does not have custom_action_handler_url",
+  },
+  5: {
+    name: "Authentication Error",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Unauthenticated, problem with authentication",
+  },
+  40: {
+    name: "Authentication Token Expired",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Unauthenticated, token expired",
+  },
+  42: {
+    name: "Authentication Token Before Issued At",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Unauthenticated, token date incorrect",
+  },
+  41: {
+    name: "Authentication Token Not Valid Yet",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Unauthenticated, token not valid yet",
+  },
+  43: {
+    name: "Authentication Token Signature Invalid",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Unauthenticated, token signature invalid",
+  },
+  2: {
+    name: "Access Key Error",
+    httpStatus: 401,
+    httpStatusText: "Unauthorised",
+    description: "Access Key invalid",
+  },
+  17: {
+    name: "Not Allowed Error",
+    httpStatus: 403,
+    httpStatusText: "Forbidden",
+    description: "Unauthorised / forbidden to make request",
+  },
+  99: {
+    name: "App Suspended Error",
+    httpStatus: 403,
+    httpStatusText: "Forbidden",
+    description: "App suspended",
+  },
+  60: {
+    name: "Cooldown Error",
+    httpStatus: 403,
+    httpStatusText: "Forbidden",
+    description: "User tried to post a message during the cooldown period",
+  },
+  16: {
+    name: "Does Not Exist Error",
+    httpStatus: 404,
+    httpStatusText: "Not Found",
+    description: "Resource not found",
+  },
+  23: {
+    name: "Request Timeout Error",
+    httpStatus: 408,
+    httpStatusText: "Request Timeout",
+    description: "Request timed out",
+  },
+  22: {
+    name: "Payload Too Big Error",
+    httpStatus: 413,
+    httpStatusText: "Request Entity Too Large",
+    description: "Payload too big",
+  },
+  9: {
+    name: "Rate Limit Error",
+    httpStatus: 429,
+    httpStatusText: "Too Many Requests",
+    description: "Too many requests in a certain time frame",
+  },
+  24: {
+    name: "Maximum Header Size Exceeded Error",
+    httpStatus: 431,
+    httpStatusText: "Request Header Fields Too Large",
+    description: "Request headers are too large",
+  },
+  "-1": {
+    name: "Internal System Error",
+    httpStatus: 500,
+    httpStatusText: "Internal Server Error",
+    description: "Triggered when something goes wrong in our system",
+  },
+  70: {
+    name: "No Access to Channels",
+    httpStatus: 403,
+    httpStatusText: "Unauthorised",
+    description: "No access to requested channels",
+  },
+  73: {
+    name: "Message Moderation Failed",
+    httpStatus: 400,
+    httpStatusText: "Bad Request",
+    description: "Message did not pass moderation",
+  },
+};
