@@ -5,6 +5,7 @@ import DashboardCard from './components/DashboardCard'
 import ErrorDistributionChart from './components/ErrorDistributionChart'
 import ClientTypeDistributionChart from './components/ClientTypeDistributionChart'
 import SDKErrorDistributionChart from './components/SDKErrorDistributionChart'
+import SDKVersionsCard from './components/SDKVersionsCard'
 
 
 function App() {
@@ -128,7 +129,7 @@ function App() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 gap-6 mb-8">
         <DashboardCard title="Time Window Analysis (GMT)">
           {analysisData?.timeWindow ? (
             <div className="space-y-2">
@@ -139,6 +140,9 @@ function App() {
             <p className="text-sm text-gray-500">No time data available</p>
           )}
         </DashboardCard>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
         <DashboardCard title="Total 4xx Errors" valueColor="text-3xl font-bold text-red-600">
           {analysisData?.totalErrors || 0}
@@ -147,7 +151,14 @@ function App() {
         <DashboardCard title="Unique Error Codes" valueColor="text-3xl font-bold text-blue-600">
           {analysisData?.uniqueErrorCodes || 0}
         </DashboardCard>
+
+        {/* SDK Versions Card */}
+        <SDKVersionsCard versions={analysisData?.sdkVersions} />
       </div>
+
+      {/* <div className="grid grid-cols-1 gap-6 mb-8">
+        <SDKVersionsCard versions={analysisData?.sdkVersions} />
+      </div> */}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
