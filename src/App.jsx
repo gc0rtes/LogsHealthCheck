@@ -4,7 +4,7 @@ import { validateCSVFields, analyzeCSVData } from './utils/csvValidation'
 import DashboardCard from './components/DashboardCard'
 import ErrorDistributionChart from './components/ErrorDistributionChart'
 import ClientTypeDistributionChart from './components/ClientTypeDistributionChart'
-import './App.css'
+
 
 function App() {
   const [validationResult, setValidationResult] = useState(null);

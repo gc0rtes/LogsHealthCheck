@@ -39,9 +39,9 @@ Error Distribution by Response Code (Pie Chart):
 Visualize the percentage distribution of error response codes specifically within the 4xx series (i.e., response values between 400 and 499 inclusive).
 Each slice of the pie chart should represent a unique error response code in this range, clearly showing its percentage of the total 4xx errors.
 
-Error Distribution by Operation Type (Stacked Bar Chart):
-Show the total number of errors (4xx series), broken down by operation_type.
-Each bar should represent a distinct operation_type. Segments within each bar should represent the different 4xx error response codes associated with that specific operation_type.
+Error Distribution by SDK Type and Error Code (stacked bar)
+Show the total number of errors (4xx series), broken down by SDK type.
+Each bar should represent a distinct SDK type. Segments within each bar should represent the total of the sum of each each Stream error_code associated for each SDK Type.
 
 Error Distribution by Client Type (Pie Chart):
 Client Classification Logic: Implement the provided pure JavaScript function, classifyClientType(clientString), to categorize the x-stream-client string into predefined client types. This function should reside in a src/utils helper file.
