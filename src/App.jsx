@@ -271,7 +271,9 @@ function App() {
         {/* Error Distribution Chart */}
         <DashboardCard title="4xx Error Distribution">
           {analysisData?.errorDistribution && analysisData.errorDistribution.length > 0 ? (
-            <ErrorDistributionChart data={analysisData.errorDistribution} />
+            <div className="min-h-[400px] flex items-center justify-center">
+              <ErrorDistributionChart data={analysisData.errorDistribution} />
+            </div>
           ) : (
             <p className="text-sm text-gray-500">No error distribution data available</p>
           )}
@@ -280,7 +282,9 @@ function App() {
         {/* Client Type Distribution Chart */}
         <DashboardCard title="Error Distribution by Client Type">
           {analysisData?.clientTypeDistribution && analysisData.clientTypeDistribution.length > 0 ? (
-            <ClientTypeDistributionChart data={analysisData.clientTypeDistribution} />
+            <div className="min-h-[400px] flex items-center justify-center">
+              <ClientTypeDistributionChart data={analysisData.clientTypeDistribution} />
+            </div>
           ) : (
             <p className="text-sm text-gray-500">No client type distribution data available</p>
           )}
