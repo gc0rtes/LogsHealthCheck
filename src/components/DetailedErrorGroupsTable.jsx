@@ -70,6 +70,7 @@ const DetailedErrorGroupsTable = ({ errorGroups }) => {
                                                             <th className="px-2 py-1 text-left">Operation Type</th>
                                                             <th className="px-2 py-1 text-left">Count</th>
                                                             <th className="px-2 py-1 text-left">Example Error Message</th>
+                                                            <th className="px-2 py-1 text-left">Clients</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -78,6 +79,15 @@ const DetailedErrorGroupsTable = ({ errorGroups }) => {
                                                                 <td className="px-2 py-1 font-medium">{op.type}</td>
                                                                 <td className="px-2 py-1">{op.count}</td>
                                                                 <td className="px-2 py-1 text-gray-600">{op.exampleMessage}</td>
+                                                                <td className="px-2 py-1">
+                                                                    <div className="max-h-20 overflow-y-auto">
+                                                                        {op.clients.map((client, index) => (
+                                                                            <div key={index} className="text-xs text-gray-600 mb-1">
+                                                                                {client}
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
