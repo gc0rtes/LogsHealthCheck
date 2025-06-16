@@ -80,6 +80,27 @@ function App() {
     });
   };
 
+  const calculateDuration = (start, end) => {
+    const diffMs = new Date(end) - new Date(start);
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const diffWeeks = Math.floor(diffDays / 7);
+
+    if (diffWeeks > 0) {
+      return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''}`;
+    } else if (diffDays > 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    } else if (diffHours > 0) {
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''}`;
+    } else if (diffMins > 0) {
+      return `${diffMins} minute${diffMins > 1 ? 's' : ''}`;
+    } else {
+      return `${diffSecs} second${diffSecs > 1 ? 's' : ''}`;
+    }
+  };
+
   const renderUploadArea = () => (
     <div className="px-4 py-6 sm:px-0">
       <div
@@ -125,7 +146,7 @@ function App() {
       <div className="flex justify-center mb-8">
         <button
           onClick={handleNewUpload}
-          className="!bg-[#2c2121] hover:!bg-[#3a2b2b] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105"
+          className="!bg-purple-600 hover:!bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105"
         >
           Upload New File
         </button>
@@ -134,23 +155,25 @@ function App() {
       <div className="grid grid-cols-1 gap-6 mb-8">
         <DashboardCard title="Time Window Analysis (GMT)">
           {analysisData?.timeWindow ? (
-            <div className="space-y-2">
+            <div className="space-y-2 text-center">
               <p className="text-sm text-gray-600">Start: {formatDate(analysisData.timeWindow.start)}</p>
               <p className="text-sm text-gray-600">End: {formatDate(analysisData.timeWindow.end)}</p>
+              <p className="text-sm font-medium text-gray-700">
+                Duration: {calculateDuration(analysisData.timeWindow.start, analysisData.timeWindow.end)}
+              </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-500">No time data available</p>
+            <p className="text-sm text-gray-500 text-center">No time data available</p>
           )}
         </DashboardCard>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
-        <DashboardCard title="Total 4xx Errors" valueColor="text-3xl font-bold text-red-600">
+        <DashboardCard title="Total 4xx Errors" valueColor="text-3xl font-bold text-purple-600 text-center">
           {analysisData?.totalErrors || 0}
         </DashboardCard>
 
-        <DashboardCard title="Unique Stream Error Codes" valueColor="text-3xl font-bold text-blue-600">
+        <DashboardCard title="Unique Stream Error Codes" valueColor="text-3xl font-bold text-blue-600 text-center">
           {analysisData?.uniqueErrorCodes || 0}
         </DashboardCard>
 
@@ -229,8 +252,8 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto">
         <div className="text-center py-8">
-          <h1 className="text-3xl font-bold text-gray-900">CSV Field Validator</h1>
-          <p className="mt-2 text-gray-600">Upload your CSV file to validate required fields</p>
+          <h1 className="text-3xl font-bold text-gray-900">Logs Integration Review</h1>
+          <p className="mt-2 text-gray-600">Upload your CSV file to run the Health Check</p>
         </div>
 
         <div className="px-4 sm:px-6 lg:px-8">
