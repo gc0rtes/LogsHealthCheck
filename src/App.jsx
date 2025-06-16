@@ -115,24 +115,20 @@ function App() {
   };
 
   const calculateDuration = (start, end) => {
-    const diffMs = new Date(end) - new Date(start);
-    const diffSecs = Math.floor(diffMs / 1000);
-    const diffMins = Math.floor(diffSecs / 60);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-    const diffWeeks = Math.floor(diffDays / 7);
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffInSeconds = Math.floor((endDate - startDate) / 1000);
 
-    if (diffWeeks > 0) {
-      return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''}`;
-    } else if (diffDays > 0) {
-      return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    } else if (diffHours > 0) {
-      return `${diffHours} hour${diffHours > 1 ? 's' : ''}`;
-    } else if (diffMins > 0) {
-      return `${diffMins} minute${diffMins > 1 ? 's' : ''}`;
-    } else {
-      return `${diffSecs} second${diffSecs > 1 ? 's' : ''}`;
-    }
+    const hours = Math.floor(diffInSeconds / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = diffInSeconds % 60;
+
+    const parts = [];
+    if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
+    if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
+    if (seconds > 0 || parts.length === 0) parts.push(`${seconds} second${seconds !== 1 ? 's' : ''}`);
+
+    return parts.join(', ');
   };
 
   const renderUploadArea = () => (
