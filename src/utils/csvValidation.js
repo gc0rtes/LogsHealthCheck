@@ -1,6 +1,6 @@
 import Papa from "papaparse";
 import { classifyClientType } from "./clientClassification";
-import { extractSDKVersions } from "./sdkVersionExtractor";
+import { extractLatestSDKVersions } from "./sdkVersionExtractor";
 
 const REQUIRED_FIELDS = [
   "response",
@@ -63,19 +63,15 @@ export const analyzeCSVData = (file) => {
         const errorDistribution = {};
         const clientTypeDistribution = {};
         const sdkErrorDistribution = {};
-        const sdkVersions = {};
         let total4xxErrors = 0;
 
-        data.forEach((row) => {
-          // Extract and update SDK versions
-          const sdkInfo = extractSDKVersions(row["x-stream-client"]);
-          if (sdkInfo) {
-            const { sdk, version } = sdkInfo;
-            if (!sdkVersions[sdk] || version > sdkVersions[sdk]) {
-              sdkVersions[sdk] = version;
-            }
-          }
+        // Extract SDK versions from all client strings
+        const clientStrings = data
+          .map((row) => row["x-stream-client"])
+          .filter(Boolean);
+        const sdkVersions = extractLatestSDKVersions(clientStrings);
 
+        data.forEach((row) => {
           const response = parseInt(row.response);
           if (response >= 400 && response < 500) {
             total4xxErrors++;

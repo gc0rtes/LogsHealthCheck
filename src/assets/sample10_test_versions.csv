@@ -161,14 +161,6 @@
 "Jun 15, 2025 @ 14:09:24.003",UnreadCounts,404,"{""code"":16,""message"":""UnreadCounts failed with error: \""the user 95445211 does not exist\"""",""StatusCode"":404,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","-",chat,16
 "Jun 15, 2025 @ 14:09:24.002",QueryChannels,404,"{""code"":16,""message"":""QueryChannels failed with error: \""the user 406788141 does not exist\"""",""StatusCode"":404,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","-",chat,16
 "Jun 15, 2025 @ 14:09:24.000",QueryChannels,404,"{""code"":16,""message"":""QueryChannels failed with error: \""the user 76e993e2-a416-4def-a78f-015fe7a5c7db does not exist\"""",""StatusCode"":404,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","stream-java-client-1.26.2",chat,16
-
-
-
-
-
-
-
-
 "Jun 15, 2025 @ 14:09:24.020",GetOrCreateChannel,400,"{""code"":4,""message"":""GetOrCreateChannel failed with error: \""either data.created_by or data.created_by_id must be provided when using server side auth.\"""",""StatusCode"":400,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","stream-chat-javascript-client-browser-8.14.5",chat,4
 "Jun 15, 2025 @ 14:09:24.009",CreateDevice,400,"{""code"":4,""message"":""CreateDevice failed with error: \""push provider \""firebase\"" with type \""firebase\"" not found, available push providers for this application: type: \""firebase\"" name: \""hoop-prod\""\"""",""StatusCode"":400,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","stream-chat-react-10.21.0-stream-chat-javascript-client-browser-8.14.4",chat,4
 "Jun 15, 2025 @ 14:09:24.003",UnreadCounts,404,"{""code"":16,""message"":""UnreadCounts failed with error: \""the user 95445211 does not exist\"""",""StatusCode"":404,""duration"":""0.00ms"",""more_info"":""https://getstream.io/chat/docs/api_errors_response"",""details"":[]}","stream-chat-react-12.11.0-stream-chat-javascript-client-browser-8.55.0",chat,16
