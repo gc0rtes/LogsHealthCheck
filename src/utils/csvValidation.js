@@ -139,6 +139,7 @@ export const analyzeCSVData = (file) => {
           clientTypeDistribution: clientTypeDistributionData,
           sdkErrorDistribution: sdkErrorDistributionData,
           sdkVersions,
+          data,
         });
       },
       error: (error) => {

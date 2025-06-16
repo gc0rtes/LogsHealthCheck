@@ -6,6 +6,8 @@ import ErrorDistributionChart from './components/ErrorDistributionChart'
 import ClientTypeDistributionChart from './components/ClientTypeDistributionChart'
 import SDKErrorDistributionChart from './components/SDKErrorDistributionChart'
 import SDKVersionsCard from './components/SDKVersionsCard'
+import DetailedErrorGroupsTable from './components/DetailedErrorGroupsTable'
+import { extractErrorGroups } from './utils/errorGroupsExtractor'
 
 
 function App() {
@@ -188,6 +190,17 @@ function App() {
             <SDKErrorDistributionChart data={analysisData.sdkErrorDistribution} />
           ) : (
             <p className="text-sm text-gray-500">No SDK error distribution data available</p>
+          )}
+        </DashboardCard>
+      </div>
+
+      {/* Detailed Error Groups Table */}
+      <div className="grid grid-cols-1 gap-6 mb-8">
+        <DashboardCard title="Detailed Error Groups Table">
+          {analysisData?.data && analysisData.data.length > 0 ? (
+            <DetailedErrorGroupsTable errorGroups={extractErrorGroups(analysisData.data)} />
+          ) : (
+            <p className="text-sm text-gray-500">No error group data available</p>
           )}
         </DashboardCard>
       </div>
