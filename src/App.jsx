@@ -8,7 +8,41 @@ import SDKErrorDistributionChart from './components/SDKErrorDistributionChart'
 import SDKVersionsCard from './components/SDKVersionsCard'
 import DetailedErrorGroupsTable from './components/DetailedErrorGroupsTable'
 import { extractErrorGroups } from './utils/errorGroupsExtractor'
+import { ERROR_CODES } from './utils/StreamErrorCodes'
 
+const getResponseCodeText = (code) => {
+  const statusTexts = {
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    406: 'Not Acceptable',
+    407: 'Proxy Authentication Required',
+    408: 'Request Timeout',
+    409: 'Conflict',
+    410: 'Gone',
+    411: 'Length Required',
+    412: 'Precondition Failed',
+    413: 'Payload Too Large',
+    414: 'URI Too Long',
+    415: 'Unsupported Media Type',
+    416: 'Range Not Satisfiable',
+    417: 'Expectation Failed',
+    418: 'I\'m a teapot',
+    421: 'Misdirected Request',
+    422: 'Unprocessable Entity',
+    423: 'Locked',
+    424: 'Failed Dependency',
+    425: 'Too Early',
+    426: 'Upgrade Required',
+    428: 'Precondition Required',
+    429: 'Too Many Requests',
+    431: 'Request Header Fields Too Large',
+    451: 'Unavailable For Legal Reasons'
+  };
+  return statusTexts[code] || 'Unknown Status';
+};
 
 function App() {
   const [validationResult, setValidationResult] = useState(null);
@@ -169,12 +203,59 @@ function App() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <DashboardCard title="Total 4xx Errors" valueColor="text-3xl font-bold text-purple-600 text-center">
-          {analysisData?.totalErrors || 0}
+        <DashboardCard title="Total 4xx Errors" valueColor="text-center">
+          <div className="text-3xl font-bold text-purple-600 mb-2">
+            {analysisData?.totalErrors || 0}
+          </div>
+          {analysisData?.data && (
+            <div className="text-sm text-gray-600 space-y-1 max-h-48 overflow-y-auto pr-2">
+              {Array.from(new Set(analysisData.data
+                .filter(row => {
+                  const responseCode = parseInt(row.response);
+                  return responseCode >= 400 && responseCode < 500;
+                })
+                .map(row => `${row.response} - ${getResponseCodeText(row.response)}`)))
+                .sort((a, b) => {
+                  const codeA = parseInt(a.split(' - ')[0]);
+                  const codeB = parseInt(b.split(' - ')[0]);
+                  return codeA - codeB;
+                })
+                .map((responseCode, index) => (
+                  <div key={index} className="text-center py-1">
+                    {responseCode}
+                  </div>
+                ))}
+            </div>
+          )}
         </DashboardCard>
 
-        <DashboardCard title="Unique Stream Error Codes" valueColor="text-3xl font-bold text-blue-600 text-center">
-          {analysisData?.uniqueErrorCodes || 0}
+        <DashboardCard title="Unique Stream Error Codes" valueColor="text-center">
+          <div className="text-3xl font-bold text-blue-600 mb-2">
+            {analysisData?.uniqueErrorCodes || 0}
+          </div>
+          {analysisData?.data && (
+            <div className="text-sm text-gray-600 space-y-1 max-h-48 overflow-y-auto pr-2">
+              {Array.from(new Set(analysisData.data
+                .filter(row => {
+                  const responseCode = parseInt(row.response);
+                  return responseCode >= 400 && responseCode < 500 && row.error_code;
+                })
+                .map(row => {
+                  const errorCode = parseInt(row.error_code);
+                  return `${errorCode} - ${ERROR_CODES[errorCode]?.name || 'Unknown error code'}`;
+                })))
+                .sort((a, b) => {
+                  const codeA = parseInt(a.split(' - ')[0]);
+                  const codeB = parseInt(b.split(' - ')[0]);
+                  return codeA - codeB;
+                })
+                .map((errorCode, index) => (
+                  <div key={index} className="text-center py-1">
+                    {errorCode}
+                  </div>
+                ))}
+            </div>
+          )}
         </DashboardCard>
 
         {/* SDK Versions Card */}

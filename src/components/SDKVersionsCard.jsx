@@ -4,27 +4,25 @@ import DashboardCard from './DashboardCard';
 const SDKVersionsCard = ({ versions }) => {
     if (!versions || Object.keys(versions).length === 0) {
         return (
-            <DashboardCard title="SDK Versions">
+            <DashboardCard title="Latest SDK Versions" valueColor="text-center">
                 <p className="text-sm text-gray-500">No SDK version data available</p>
             </DashboardCard>
         );
     }
 
     return (
-        <DashboardCard title="Latest SDK Versions">
-            <div className="h-[150px] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="space-y-2">
-                    {Object.entries(versions).map(([sdk, version]) => (
-                        <div key={sdk} className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-700 capitalize truncate mr-2">
-                                {sdk.replace(/-/g, ' ')}
-                            </span>
-                            <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded whitespace-nowrap">
-                                v{version}
-                            </span>
+        <DashboardCard title="Latest SDK Versions" valueColor="text-center">
+            <div className="text-3xl font-bold text-green-600 mb-2">
+                {Object.keys(versions).length}
+            </div>
+            <div className="text-sm text-gray-600 space-y-1 max-h-48 overflow-y-auto pr-2">
+                {Object.entries(versions)
+                    .sort((a, b) => a[0].localeCompare(b[0]))
+                    .map(([sdkType, version]) => (
+                        <div key={sdkType} className="text-center py-1">
+                            {sdkType}: {version}
                         </div>
                     ))}
-                </div>
             </div>
         </DashboardCard>
     );
